@@ -1,0 +1,22 @@
+.container {
+    width: 50%;
+    margin: 100px auto;
+    min-height: 40vh;
+    overflow: hidden;
+}
+
+.leftCard {
+    width: 50%;
+    float: left;
+}
+.rightCard {
+    width: 50%;
+    float: right;
+}
+
+@media all and (min-width:0px) and (max-width: 992px) {
+    .container {
+        display: flex;
+        flex-direction: column;
+    }
+}

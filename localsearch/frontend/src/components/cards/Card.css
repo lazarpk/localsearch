@@ -1,0 +1,10 @@
+.cardContainer {
+    overflow: "hidden";
+}
+
+@media all and (min-width:0px) and (max-width: 992px) {
+    .cardContainer {
+        display: flex;
+        flex-direction: column;
+    }
+}
