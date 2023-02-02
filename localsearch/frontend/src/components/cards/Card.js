@@ -19,6 +19,8 @@ export default function MediaCard(props) {
         phone: ""
     });
 
+    const [isOpen, setIsOpen] = useState(false);
+
     const [reviews, setReviews] = useState({
         ambiente: "",
         service: "",
@@ -33,7 +35,21 @@ export default function MediaCard(props) {
             await axios.get(`https://storage.googleapis.com/coding-session-rest-api/${props.id}`).then(res => {
                 let new_array = []
                 let result = []
-                
+                let currentDateTime = new Date();
+                currentDateTime.setHours(11, 30, 0, 0)
+                let todayDay = currentDateTime.getDay();
+                let dayName = days[todayDay-1]
+            
+                let openingHours = res.data.opening_hours.days[dayName]
+                openingHours.forEach(element => {
+                    let openHour = new Date (currentDateTime.getFullYear(), currentDateTime.getMonth(), currentDateTime.getDate(), element.start.split(":")[0], element.start.split(":")[1])
+                    let closeHour = new Date (currentDateTime.getFullYear(), currentDateTime.getMonth(), currentDateTime.getDate(), element.end.split(":")[0], element.end.split(":")[1])
+
+                    if (currentDateTime >= openHour && currentDateTime < closeHour) {
+                        setIsOpen(true);
+                        return
+                    } 
+                });
                 days.map((item, day_index)=> {
                     if (res.data.opening_hours.days[item]) {
                         if (res.data.opening_hours.days[item].length == 1) {
@@ -138,6 +154,7 @@ export default function MediaCard(props) {
                         <img src={props.restaurantImage}/>
                     </div>
                     <h4>{values.displayed_what}</h4><br/>
+                    <lable style={isOpen ? {color: "green"} : {color: "red"}}>{isOpen ? "Open" : "Closed"}</lable>
                     <h6>{values.displayed_where}</h6><br />
                     <span><i className="fa fa-phone" aria-hidden="true" style={{color: "green"}}></i> {values.phone}</span>
                 </div>
@@ -150,10 +167,13 @@ export default function MediaCard(props) {
                                 item.hours.length > 1 ?
                                     item.hours.map((row, index) => (
                                         index != 0 ?
+                                        
                                             <tr key={item.name}>
                                                 <td></td>
                                                 <td style={{textAlign: "right"}}>{row.start} - {row.end}</td>
+                                                
                                             </tr>
+                
                                         : 
                                             <tr key={item.name}>
                                                 <td>{item.name}</td>
